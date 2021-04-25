@@ -126,14 +126,17 @@ include $(TEMPLATE_PATH)/Makefile.common
 
 $(foreach target, $(TARGETS), $(call define_target, $(target)))
 
-.PHONY: flash erase clean
+.PHONY: flash erase recover
 
 # Flash the program
 flash: default
-	@echo Flashing: $(OUTPUT_DIRECTORY)/smardCard_nrf52840.hex
 	nrfjprog -f nrf52 --eraseall
-	nrfjprog -f nrf52 --program $(OUTPUT_DIRECTORY)/smardCard_nrf52840.hex --sectorerase
+	nrfjprog -f nrf52 --program softdevice/s140_nrf52_7.2.0_softdevice.hex --chiperase --verify
+	nrfjprog -f nrf52 --program $(OUTPUT_DIRECTORY)/smardCard_nrf52840.hex --verify
 	nrfjprog -f nrf52 --reset
 
 erase:
 	nrfjprog -f nrf52 --eraseall
+
+recover:
+	nrfjprog --recover
