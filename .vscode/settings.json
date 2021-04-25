@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "app_util_platform.h": "c",
+        "nrf_drv_spi.h": "c"
+    }
+}
