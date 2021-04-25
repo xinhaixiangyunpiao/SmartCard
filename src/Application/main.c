@@ -645,113 +645,56 @@ void BTN3_PRESS_UP_Handler(void *btn)
 }
 
 int main(void)
-{
-//		uint32_t err_code;
-//		  //uart init.
-//    const app_uart_comm_params_t comm_params =
-//      {
-//          RX_PIN_NUMBER,
-//          TX_PIN_NUMBER,
-//          RTS_PIN_NUMBER,
-//          CTS_PIN_NUMBER,
-//          UART_HWFC,
-//          false,
-//#if defined (UART_PRESENT)
-//          NRF_UART_BAUDRATE_115200
-//#else
-//          NRF_UARTE_BAUDRATE_115200
-//#endif
-//      };
-//		APP_UART_FIFO_INIT(&comm_params,
-//                         UART_RX_BUF_SIZE,
-//                         UART_TX_BUF_SIZE,
-//                         uart_error_handle,
-//                         APP_IRQ_PRIORITY_LOWEST,
-//                         err_code);
-
-//    APP_ERROR_CHECK(err_code);
-//    printf("UART example started.\r\n");
-			
+{	
     bsp_board_init(BSP_INIT_LEDS);
-		
-		
 
-//    APP_ERROR_CHECK(NRF_LOG_INIT(NULL));
-//    NRF_LOG_DEFAULT_BACKENDS_INIT();
+    gpio_init();
+    bsp_board_leds_on();
 
-//    nrf_drv_spi_config_t spi_config = NRF_DRV_SPI_DEFAULT_CONFIG;
-//    spi_config.ss_pin   = SPI_SS_PIN;
-//    spi_config.miso_pin = 0xFF;
-//    spi_config.mosi_pin = SPI_MOSI_PIN;
-//    spi_config.sck_pin  = SPI_SCK_PIN;
-//    APP_ERROR_CHECK(nrf_drv_spi_init(&spi, &spi_config, spi_event_handler, NULL));
-
-		gpio_init();
-
-		SPI_Init();
-		SPI_Disable();
-		SPI_Enable();
-		DEV_Module_Init(); //Init Dev module
-		bsp_board_leds_on();
-		EPD_1IN54_V2_Init();
-		
-		
-		EPD_1IN54_V2_Clear();
+    SPI_Init();
+    SPI_Disable();
+    SPI_Enable();
+    DEV_Module_Init(); //Init Dev module
+    EPD_1IN54_V2_Init();
+    EPD_1IN54_V2_Clear();
     nrf_delay_ms(500);
 		
-		unsigned char *BlackImage;
+	unsigned char *BlackImage;
     /* you have to edit the startup_stm32fxxx.s file and set a big enough heap size */
     unsigned short Imagesize = ((EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1)) * EPD_1IN54_V2_HEIGHT;
     if((BlackImage = (UBYTE *)malloc(Imagesize)) == NULL) {
         return -1;
     }
     Paint_NewImage(BlackImage, EPD_1IN54_V2_WIDTH, EPD_1IN54_V2_HEIGHT, 270, WHITE);
-
-#if 1   //show image for array    
+ 
     Paint_SelectImage(BlackImage);
     Paint_Clear(WHITE);
     Paint_DrawBitMap(gImage_1in54);
 
     EPD_1IN54_V2_Display(BlackImage);
     nrf_delay_ms(2000);
-#endif
-  	//printf("print screen completed.\n");
 		
-		struct button btn1,btn2,btn3;
+	struct button btn1,btn2,btn3;
 		
     button_init(&btn1, read_button1_GPIO, 0);
     button_init(&btn2, read_button2_GPIO, 0);
     button_init(&btn3, read_button3_GPIO, 0);
 		
-    button_attach(&btn1, PRESS_DOWN,       BTN1_PRESS_DOWN_Handler);
-    button_attach(&btn1, PRESS_UP,         BTN1_PRESS_UP_Handler);
-    button_attach(&btn2, PRESS_DOWN,       BTN2_PRESS_DOWN_Handler);
-    button_attach(&btn2, PRESS_UP,         BTN2_PRESS_UP_Handler);
-    button_attach(&btn3, PRESS_DOWN,       BTN3_PRESS_DOWN_Handler);
-    button_attach(&btn3, PRESS_UP,         BTN3_PRESS_UP_Handler);
+    button_attach(&btn1, PRESS_DOWN, BTN1_PRESS_DOWN_Handler);
+    button_attach(&btn1, PRESS_UP,   BTN1_PRESS_UP_Handler);
+    button_attach(&btn2, PRESS_DOWN, BTN2_PRESS_DOWN_Handler);
+    button_attach(&btn2, PRESS_UP,   BTN2_PRESS_UP_Handler);
+    button_attach(&btn3, PRESS_DOWN, BTN3_PRESS_DOWN_Handler);
+    button_attach(&btn3, PRESS_UP,   BTN3_PRESS_UP_Handler);
     button_start(&btn1);
     button_start(&btn2);
     button_start(&btn3);
 		
-    bsp_board_leds_off();
+    // bsp_board_leds_off();
     while (1)
     {
-			//printf("loop\n");
-        // Reset rx buffer and transfer done flag
-    //    memset(m_rx_buf, 0, m_length);
-//        spi_xfer_done = false;
-
-//        APP_ERROR_CHECK(nrf_drv_spi_transfer(&spi, m_tx_buf, m_length, m_rx_buf, m_length));
-
-//        while (!spi_xfer_done)
-//        {
-//            __WFE();
-//        }
-
-//        NRF_LOG_FLUSH();
-				button_ticks();
-
+		button_ticks();
         bsp_board_led_invert(0);
-        nrf_delay_ms(200);
+        nrf_delay_ms(3000);
     }
 }

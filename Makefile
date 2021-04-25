@@ -131,6 +131,7 @@ $(foreach target, $(TARGETS), $(call define_target, $(target)))
 # Flash the program
 flash: default
 	@echo Flashing: $(OUTPUT_DIRECTORY)/smardCard_nrf52840.hex
+	nrfjprog -f nrf52 --eraseall
 	nrfjprog -f nrf52 --program $(OUTPUT_DIRECTORY)/smardCard_nrf52840.hex --sectorerase
 	nrfjprog -f nrf52 --reset
 
