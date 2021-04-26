@@ -8,10 +8,15 @@
 *   Achieve display characters: Display a single character, string, number
 *   Achieve time display: adaptive size display time minutes and seconds
 *----------------
-* |	This version:   V3.0
-* | Date        :   2019-04-18
+* |	This version:   V3.1
+* | Date        :   2019-10-10
 * | Info        :
 * -----------------------------------------------------------------------------
+* V3.1(2019-10-10):
+* 1. Add gray level
+*   PAINT Add Scale
+* 2. Add void Paint_SetScale(UBYTE scale);
+* 
 * V3.0(2019-04-18):
 * 1.Change: 
 *    Paint_DrawPoint(..., DOT_STYLE DOT_STYLE)
@@ -65,9 +70,8 @@
 #ifndef __GUI_PAINT_H
 #define __GUI_PAINT_H
 
-#define UBYTE unsigned char
-#define UWORD unsigned short
-#define int32_t int
+#include "DEV_Config.h"
+#include "fonts.h"
 
 /**
  * Image attributes
@@ -193,13 +197,16 @@ void Paint_DrawRectangle(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWO
 void Paint_DrawCircle(UWORD X_Center, UWORD Y_Center, UWORD Radius, UWORD Color, DOT_PIXEL Line_width, DRAW_FILL Draw_Fill);
 
 //Display string
+void Paint_DrawChar(UWORD Xstart, UWORD Ystart, const char Acsii_Char, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
+void Paint_DrawString_EN(UWORD Xstart, UWORD Ystart, const char * pString, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
+void Paint_DrawString_CN(UWORD Xstart, UWORD Ystart, const char * pString, cFONT* font, UWORD Color_Foreground, UWORD Color_Background);
+void Paint_DrawNum(UWORD Xpoint, UWORD Ypoint, int32_t Nummber, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
+void Paint_DrawTime(UWORD Xstart, UWORD Ystart, PAINT_TIME *pTime, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
 
 //pic
 void Paint_DrawBitMap(const unsigned char* image_buffer);
-//void Paint_DrawBitMap_Half(const unsigned char* image_buffer, UBYTE Region);
-//void Paint_DrawBitMap_OneQuarter(const unsigned char* image_buffer, UBYTE Region);
-//void Paint_DrawBitMap_OneEighth(const unsigned char* image_buffer, UBYTE Region);
-void Paint_DrawBitMap_Block(const unsigned char* image_buffer, UBYTE Region);
+
+
 #endif
 
 

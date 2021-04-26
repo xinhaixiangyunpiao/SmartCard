@@ -51,7 +51,12 @@ target/smardCard_nrf52840/main.c.o: src/Application/main.c \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\stdlib.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\machine\stdlib.h \
  inc/nrf_balloc.h inc/nrf_log_default_backends.h inc/board_spi.h \
- inc/GUI_Paint.h inc/multi_button.h inc/nrfx.h inc/ble.h inc/ble_err.h \
+ inc/GUI_Paint.h inc/DEV_Config.h \
+ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\unistd.h \
+ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\unistd.h \
+ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\errno.h \
+ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\errno.h \
+ inc/fonts.h inc/multi_button.h inc/nrfx.h inc/ble.h inc/ble_err.h \
  inc/ble_gap.h inc/ble_hci.h inc/ble_ranges.h inc/ble_types.h \
  inc/ble_l2cap.h inc/ble_gatt.h inc/ble_gattc.h inc/ble_gatts.h \
  inc/ble_err.h inc/ble_hci.h inc/ble_srv_common.h inc/ble.h \
@@ -271,6 +276,18 @@ inc/nrf_log_default_backends.h:
 inc/board_spi.h:
 
 inc/GUI_Paint.h:
+
+inc/DEV_Config.h:
+
+c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\unistd.h:
+
+c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\unistd.h:
+
+c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\errno.h:
+
+c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\errno.h:
+
+inc/fonts.h:
 
 inc/multi_button.h:
 

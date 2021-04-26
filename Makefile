@@ -81,6 +81,13 @@ SRC_FILES += \
   ./src/nRF_SoftDevice/nrf_sdh.c \
   ./src/nRF_SoftDevice/nrf_sdh_ble.c \
   ./src/nRF_SoftDevice/nrf_sdh_soc.c \
+  ./src/nRF_Util/font8.c \
+  ./src/nRF_Util/font12.c \
+  ./src/nRF_Util/font12CN.c \
+  ./src/nRF_Util/font16.c \
+  ./src/nRF_Util/font20.c \
+  ./src/nRF_Util/font24.c \
+  ./src/nRF_Util/font24CN.c \
   ./src/UTF8-UTF16-converter/utf.c \
 
 # Include folders common to all targets
