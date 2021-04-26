@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Nordic Semiconductor ASA
+ * Copyright (c) 2015 - 2019, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -71,10 +71,10 @@ extern "C" {
 #define NRF_RADIO_MINIMUM_TIMESLOT_LENGTH_EXTENSION_TIME_US (200)
 
 /**@brief The maximum processing time to handle a timeslot extension. */
-#define NRF_RADIO_MAX_EXTENSION_PROCESSING_TIME_US           (25)
+#define NRF_RADIO_MAX_EXTENSION_PROCESSING_TIME_US           (20)
 
 /**@brief The latest time before the end of a timeslot the timeslot can be extended. */
-#define NRF_RADIO_MIN_EXTENSION_MARGIN_US                    (87)
+#define NRF_RADIO_MIN_EXTENSION_MARGIN_US                    (82)
 
 #define SOC_ECB_KEY_LENGTH                (16)                       /**< ECB key length. */
 #define SOC_ECB_CLEARTEXT_LENGTH          (16)                       /**< ECB cleartext length. */
@@ -93,7 +93,7 @@ extern "C" {
 
 #define NRF_RADIO_EARLIEST_TIMEOUT_MAX_US (128000000UL - 1UL) /**< The longest timeout, in microseconds, allowed when requesting the earliest possible timeslot. */
 
-#define NRF_RADIO_START_JITTER_US         (3)                 /**< The maximum jitter in @ref NRF_RADIO_CALLBACK_SIGNAL_TYPE_START relative to the requested start time. */
+#define NRF_RADIO_START_JITTER_US         (2)                 /**< The maximum jitter in @ref NRF_RADIO_CALLBACK_SIGNAL_TYPE_START relative to the requested start time. */
 
 /**@brief Mask of PPI channels reserved by the SoftDevice when the SoftDevice is disabled. */
 #define NRF_SOC_SD_PPI_CHANNELS_SD_DISABLED_MSK ((uint32_t)(0))
@@ -157,6 +157,7 @@ enum NRF_SOC_SVCS
   SD_POWER_RESET_REASON_CLR               = SOC_SVC_BASE_NOT_AVAILABLE + 9,
   SD_POWER_POF_ENABLE                     = SOC_SVC_BASE_NOT_AVAILABLE + 10,
   SD_POWER_POF_THRESHOLD_SET              = SOC_SVC_BASE_NOT_AVAILABLE + 11,
+  SD_POWER_POF_THRESHOLDVDDH_SET          = SOC_SVC_BASE_NOT_AVAILABLE + 12,
   SD_POWER_RAM_POWER_SET                  = SOC_SVC_BASE_NOT_AVAILABLE + 13,
   SD_POWER_RAM_POWER_CLR                  = SOC_SVC_BASE_NOT_AVAILABLE + 14,
   SD_POWER_RAM_POWER_GET                  = SOC_SVC_BASE_NOT_AVAILABLE + 15,
@@ -164,6 +165,7 @@ enum NRF_SOC_SVCS
   SD_POWER_GPREGRET_CLR                   = SOC_SVC_BASE_NOT_AVAILABLE + 17,
   SD_POWER_GPREGRET_GET                   = SOC_SVC_BASE_NOT_AVAILABLE + 18,
   SD_POWER_DCDC_MODE_SET                  = SOC_SVC_BASE_NOT_AVAILABLE + 19,
+  SD_POWER_DCDC0_MODE_SET                 = SOC_SVC_BASE_NOT_AVAILABLE + 20,
   SD_APP_EVT_WAIT                         = SOC_SVC_BASE_NOT_AVAILABLE + 21,
   SD_CLOCK_HFCLK_REQUEST                  = SOC_SVC_BASE_NOT_AVAILABLE + 22,
   SD_CLOCK_HFCLK_RELEASE                  = SOC_SVC_BASE_NOT_AVAILABLE + 23,
@@ -215,6 +217,26 @@ enum NRF_POWER_THRESHOLDS
   NRF_POWER_THRESHOLD_V28        /**< 2.8 Volts power failure threshold. */
 };
 
+/**@brief Power failure thresholds for high voltage */
+enum NRF_POWER_THRESHOLDVDDHS
+{
+  NRF_POWER_THRESHOLDVDDH_V27,       /**< 2.7 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V28,       /**< 2.8 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V29,       /**< 2.9 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V30,       /**< 3.0 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V31,       /**< 3.1 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V32,       /**< 3.2 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V33,       /**< 3.3 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V34,       /**< 3.4 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V35,       /**< 3.5 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V36,       /**< 3.6 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V37,       /**< 3.7 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V38,       /**< 3.8 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V39,       /**< 3.9 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V40,       /**< 4.0 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V41,       /**< 4.1 Volts power failure threshold. */
+  NRF_POWER_THRESHOLDVDDH_V42        /**< 4.2 Volts power failure threshold. */
+};
 
 
 /**@brief DC/DC converter modes. */
@@ -228,8 +250,6 @@ enum NRF_POWER_DCDC_MODES
 enum NRF_RADIO_NOTIFICATION_DISTANCES
 {
   NRF_RADIO_NOTIFICATION_DISTANCE_NONE = 0, /**< The event does not have a notification. */
-  NRF_RADIO_NOTIFICATION_DISTANCE_200US,    /**< The distance from the active notification to start of radio activity. */
-  NRF_RADIO_NOTIFICATION_DISTANCE_420US,    /**< The distance from the active notification to start of radio activity. */
   NRF_RADIO_NOTIFICATION_DISTANCE_800US,    /**< The distance from the active notification to start of radio activity. */
   NRF_RADIO_NOTIFICATION_DISTANCE_1740US,   /**< The distance from the active notification to start of radio activity. */
   NRF_RADIO_NOTIFICATION_DISTANCE_2680US,   /**< The distance from the active notification to start of radio activity. */
@@ -326,6 +346,7 @@ enum NRF_SOC_EVTS
 };
 
 /**@} */
+
 
 /**@addtogroup NRF_SOC_STRUCTURES Structures
  * @{ */
@@ -566,6 +587,9 @@ SVCALL(SD_POWER_USBREGSTATUS_GET, uint32_t, sd_power_usbregstatus_get(uint32_t *
 
 /**@brief Sets the power failure comparator threshold value.
  *
+ * @note: Power failure comparator threshold setting. This setting applies both for normal voltage
+ *        mode (supply connected to both VDD and VDDH) and high voltage mode (supply connected to
+ *        VDDH only).
  *
  * @param[in] threshold The power-fail threshold value to use, see @ref NRF_POWER_THRESHOLDS.
  *
@@ -574,6 +598,18 @@ SVCALL(SD_POWER_USBREGSTATUS_GET, uint32_t, sd_power_usbregstatus_get(uint32_t *
  */
 SVCALL(SD_POWER_POF_THRESHOLD_SET, uint32_t, sd_power_pof_threshold_set(uint8_t threshold));
 
+/**@brief Sets the power failure comparator threshold value for high voltage.
+ *
+ * @note: Power failure comparator threshold setting for high voltage mode (supply connected to
+ *        VDDH only). This setting does not apply for normal voltage mode (supply connected to both
+ *        VDD and VDDH).
+ *
+ * @param[in] threshold The power-fail threshold value to use, see @ref NRF_POWER_THRESHOLDVDDHS.
+ *
+ * @retval ::NRF_SUCCESS The power failure threshold was set.
+ * @retval ::NRF_ERROR_SOC_POWER_POF_THRESHOLD_UNKNOWN The power failure threshold is unknown.
+ */
+SVCALL(SD_POWER_POF_THRESHOLDVDDH_SET, uint32_t, sd_power_pof_thresholdvddh_set(uint8_t threshold));
 
 /**@brief Writes the NRF_POWER->RAM[index].POWERSET register.
  *
@@ -629,7 +665,7 @@ SVCALL(SD_POWER_GPREGRET_CLR, uint32_t, sd_power_gpregret_clr(uint32_t gpregret_
  */
 SVCALL(SD_POWER_GPREGRET_GET, uint32_t, sd_power_gpregret_get(uint32_t gpregret_id, uint32_t *p_gpregret));
 
-/**@brief Enable or disable the DC/DC regulator.
+/**@brief Enable or disable the DC/DC regulator for the regulator stage 1 (REG1).
  *
  * @param[in] dcdc_mode The mode of the DCDC, see @ref NRF_POWER_DCDC_MODES.
  *
@@ -638,6 +674,16 @@ SVCALL(SD_POWER_GPREGRET_GET, uint32_t, sd_power_gpregret_get(uint32_t gpregret_
  */
 SVCALL(SD_POWER_DCDC_MODE_SET, uint32_t, sd_power_dcdc_mode_set(uint8_t dcdc_mode));
 
+/**@brief Enable or disable the DC/DC regulator for the regulator stage 0 (REG0).
+ *
+ * For more details on the REG0 stage, please see product specification.
+ *
+ * @param[in] dcdc_mode The mode of the DCDC0, see @ref NRF_POWER_DCDC_MODES.
+ *
+ * @retval ::NRF_SUCCESS
+ * @retval ::NRF_ERROR_INVALID_PARAM The dcdc_mode is invalid.
+ */
+SVCALL(SD_POWER_DCDC0_MODE_SET, uint32_t, sd_power_dcdc0_mode_set(uint8_t dcdc_mode));
 
 /**@brief Request the high frequency crystal oscillator.
  *

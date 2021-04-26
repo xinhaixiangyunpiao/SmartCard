@@ -165,7 +165,6 @@ static void softdevices_evt_irq_enable(void)
 #endif
 }
 
-
 static void softdevice_evt_irq_disable(void)
 {
 #ifdef SOFTDEVICE_PRESENT

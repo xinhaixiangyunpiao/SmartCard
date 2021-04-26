@@ -27,12 +27,16 @@ SRC_FILES += \
   ./src/nRF_Drivers/nrf_drv_clock.c \
   ./src/nRF_Drivers/nrf_drv_spi.c \
   ./src/nRF_Drivers/nrf_drv_uart.c \
+  ./src/nRF_Drivers/nrf_nvic.c \
+  ./src/nRF_Drivers/nrf_soc.c \
   ./src/nRF_Drivers/nrfx_atomic.c \
   ./src/nRF_Drivers/nrfx_clock.c \
   ./src/nRF_Drivers/nrfx_gpiote.c \
+  ./src/nRF_Drivers/nrfx_nfct.c \
   ./src/nRF_Drivers/nrfx_prs.c \
   ./src/nRF_Drivers/nrfx_spi.c \
   ./src/nRF_Drivers/nrfx_spim.c \
+  ./src/nRF_Drivers/nrfx_timer.c \
   ./src/nRF_Drivers/nrfx_uart.c \
   ./src/nRF_Drivers/nrfx_uarte.c \
   ./src/nRF_Drivers/retarget.c \
@@ -40,10 +44,13 @@ SRC_FILES += \
   ./src/nRF_Libraries/app_error.c \
   ./src/nRF_Libraries/app_error_handler_gcc.c \
   ./src/nRF_Libraries/app_error_weak.c \
+  ./src/nRF_Libraries/app_fifo.c \
   ./src/nRF_Libraries/app_scheduler.c \
   ./src/nRF_Libraries/app_timer2.c \
+  ./src/nRF_Libraries/app_uart_fifo.c \
   ./src/nRF_Libraries/app_util_platform.c \
   ./src/nRF_Libraries/drv_rtc.c \
+  ./src/nRF_Libraries/hardfault_handler_gcc.c \
   ./src/nRF_Libraries/hardfault_implementation.c \
   ./src/nRF_Libraries/nrf_assert.c \
   ./src/nRF_Libraries/nrf_atfifo.c \
@@ -64,6 +71,10 @@ SRC_FILES += \
   ./src/nRF_Log/nrf_log_default_backends.c \
   ./src/nRF_Log/nrf_log_frontend.c \
   ./src/nRF_Log/nrf_log_str_formatter.c \
+  ./src/nRF_NFC/nfc_ndef_msg.c \
+  ./src/nRF_NFC/nfc_ndef_record.c \
+  ./src/nRF_NFC/nfc_platform.c \
+  ./src/nRF_NFC/nfc_text_rec.c \
   ./src/nRF_Segger_RTT/SEGGER_RTT.c \
   ./src/nRF_Segger_RTT/SEGGER_RTT_Syscalls_GCC.c \
   ./src/nRF_Segger_RTT/SEGGER_RTT_printf.c \
@@ -77,6 +88,7 @@ INC_FOLDERS += ./inc
 
 # Libraries common to all targets
 LIB_FILES += \
+  ./lib/nfc_t2t_lib_gcc.a \
 
 # Optimization flags
 OPT = -O3 -g3
@@ -130,6 +142,8 @@ smardCard_nrf52840: CFLAGS += -D__HEAP_SIZE=8192
 smardCard_nrf52840: CFLAGS += -D__STACK_SIZE=8192
 smardCard_nrf52840: ASMFLAGS += -D__HEAP_SIZE=8192
 smardCard_nrf52840: ASMFLAGS += -D__STACK_SIZE=8192
+
+LIB_FILES += -lc -lnosys -lm
 
 .PHONY: default help
 
