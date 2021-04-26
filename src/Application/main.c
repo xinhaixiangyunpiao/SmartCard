@@ -785,7 +785,7 @@ static void EPD_1IN54_V2_SendData(uint8_t Data)
 {
     nrf_gpio_pin_write(EPD_DC_PIN, 1);
 //    nrf_gpio_pin_write(EPD_CS_PIN, 0);
-		SPI_ReadWriteData(&Data, m_rx_buf, sizeof(uint8_t));
+	SPI_ReadWriteData(&Data, m_rx_buf, sizeof(uint8_t));
 //    nrf_drv_spi_transfer(&spi, &Data, 1, m_rx_buf, m_length);
 //    nrf_gpio_pin_write(EPD_CS_PIN, 1);
 }
@@ -936,13 +936,98 @@ void BTN3_PRESS_UP_Handler(void *btn)
     bsp_board_led_off(2);
 }
 
+/******************************************************************************
+function :	Turn On Display part
+parameter:
+******************************************************************************/
+static void EPD_1IN54_V2_TurnOnDisplayPart(void)
+{
+    EPD_1IN54_V2_SendCommand(0x22);
+    EPD_1IN54_V2_SendData(0xFF);
+    EPD_1IN54_V2_SendCommand(0x20);
+    EPD_1IN54_V2_ReadBusy();
+}
+
+/******************************************************************************
+function :	 The image of the previous frame must be uploaded, otherwise the
+		         first few seconds will display an exception.
+parameter:
+******************************************************************************/
+void EPD_1IN54_V2_DisplayPartBaseImage(UBYTE *Image)
+{
+    UWORD Width, Height;
+    Width = (EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1);
+    Height = EPD_1IN54_V2_HEIGHT;
+
+    UDOUBLE Addr = 0;
+    EPD_1IN54_V2_SendCommand(0x24);
+    for (UWORD j = 0; j < Height; j++) {
+        for (UWORD i = 0; i < Width; i++) {
+            Addr = i + j * Width;
+            EPD_1IN54_V2_SendData(Image[Addr]);
+        }
+    }
+    EPD_1IN54_V2_SendCommand(0x26);
+    for (UWORD j = 0; j < Height; j++) {
+        for (UWORD i = 0; i < Width; i++) {
+            Addr = i + j * Width;
+            EPD_1IN54_V2_SendData(Image[Addr]);
+        }
+    }
+    EPD_1IN54_V2_TurnOnDisplayPart();
+}
+
+/******************************************************************************
+function :	Sends the image buffer in RAM to e-Paper and displays
+parameter:
+******************************************************************************/
+void EPD_1IN54_V2_DisplayPart(UBYTE *Image)
+{
+    UWORD Width, Height;
+    Width = (EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1);
+    Height = EPD_1IN54_V2_HEIGHT;
+
+    nrf_gpio_pin_write(EPD_RST_PIN, 0);
+    nrf_delay_ms(10);
+    nrf_gpio_pin_write(EPD_RST_PIN, 1);
+    nrf_delay_ms(10);
+    EPD_1IN54_V2_SendCommand(0x3C); //BorderWavefrom
+    EPD_1IN54_V2_SendData(0x80);
+	
+    UDOUBLE Addr = 0;
+    EPD_1IN54_V2_SendCommand(0x24);
+    for (UWORD j = 0; j < Height; j++) {
+        for (UWORD i = 0; i < Width; i++) {
+            Addr = i + j * Width;
+            EPD_1IN54_V2_SendData(Image[Addr]);
+        }
+    }
+    EPD_1IN54_V2_TurnOnDisplayPart();
+}
+
 int main(void)
 {	
+    // gpio led init
     bsp_board_init(BSP_INIT_LEDS);
-
     gpio_init();
     bsp_board_leds_on();
 
+    // ÉèÖÃbutton
+    struct button btn1,btn2,btn3;
+    button_init(&btn1, read_button1_GPIO, 0);
+    button_init(&btn2, read_button2_GPIO, 0);
+    button_init(&btn3, read_button3_GPIO, 0);
+    button_attach(&btn1, PRESS_DOWN, BTN1_PRESS_DOWN_Handler);
+    button_attach(&btn1, PRESS_UP,   BTN1_PRESS_UP_Handler);
+    button_attach(&btn2, PRESS_DOWN, BTN2_PRESS_DOWN_Handler);
+    button_attach(&btn2, PRESS_UP,   BTN2_PRESS_UP_Handler);
+    button_attach(&btn3, PRESS_DOWN, BTN3_PRESS_DOWN_Handler);
+    button_attach(&btn3, PRESS_UP,   BTN3_PRESS_UP_Handler);
+    button_start(&btn1);
+    button_start(&btn2);
+    button_start(&btn3);
+
+    // ble init
     timers_init();
     buttons_init();
     power_management_init();
@@ -954,7 +1039,6 @@ int main(void)
     conn_params_init();
 
     // Start execution.
-    NRF_LOG_INFO("Blinky example started.");
     advertising_start();
 
     // nfc
@@ -965,16 +1049,16 @@ int main(void)
     nfc_t2t_payload_set(m_ndef_msg_buf, len);
     nfc_t2t_emulation_start();
 
-    // spi
-    // çº¯é»‘
+    // spi e-paper
     SPI_Init();
     SPI_Disable();
     SPI_Enable();
-    DEV_Module_Init(); //Init Dev module
+    DEV_Module_Init();
     EPD_1IN54_V2_Init();
     EPD_1IN54_V2_Clear();
     nrf_delay_ms(100);
-		
+	
+    // ÉèÖÃ±³¾°Í¼
 	unsigned char *BlackImage;
     /* you have to edit the startup_stm32fxxx.s file and set a big enough heap size */
     unsigned short Imagesize = ((EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1)) * EPD_1IN54_V2_HEIGHT;
@@ -982,7 +1066,7 @@ int main(void)
         return -1;
     }
 
-    // ä¹¦å†™æµ‹è¯•ä¿¡æ¯
+    // ÏÔÊ¾ÎÄ×Ö
     Paint_NewImage(BlackImage, EPD_1IN54_V2_WIDTH, EPD_1IN54_V2_HEIGHT, 0, WHITE);
     Paint_SelectImage(BlackImage);
     Paint_Clear(WHITE);
@@ -991,31 +1075,54 @@ int main(void)
     Paint_DrawString_CN(5, 95,"Ï²»¶", &Font12CN, WHITE, BLACK);
     Paint_DrawString_CN(5, 115, "ÇñÃ÷è±", &Font24CN, BLACK, WHITE);
     EPD_1IN54_V2_Display(BlackImage);
-    nrf_delay_ms(2000);
+    nrf_delay_ms(500);
+
+    // ÏÔÊ¾Ê±¼ä
+    EPD_1IN54_V2_Init();
+    EPD_1IN54_V2_DisplayPartBaseImage(BlackImage);
+
+    printf("Partial refresh\r\n");
+    Paint_SelectImage(BlackImage);
+    PAINT_TIME sPaint_time;
+    sPaint_time.Hour = 12;
+    sPaint_time.Min = 34;
+    sPaint_time.Sec = 56;
+    int32_t num = 1000000000;
+    for (;;) {
+        sPaint_time.Sec = sPaint_time.Sec + 1;
+        if (sPaint_time.Sec == 60) {
+            sPaint_time.Min = sPaint_time.Min + 1;
+            sPaint_time.Sec = 0;
+            if (sPaint_time.Min == 60) {
+                sPaint_time.Hour =  sPaint_time.Hour + 1;
+                sPaint_time.Min = 0;
+                if (sPaint_time.Hour == 24) {
+                    sPaint_time.Hour = 0;
+                    sPaint_time.Min = 0;
+                    sPaint_time.Sec = 0;
+                }
+            }
+        }
+        Paint_ClearWindows(40, 100, 40 + Font20.Width * 7, 100 + Font20.Height, WHITE);
+        Paint_DrawTime(40, 100, &sPaint_time, &Font20, WHITE, BLACK);
+        num = num - 1;
+        if(num == 0) {
+            break;
+        }
+        EPD_1IN54_V2_DisplayPart(BlackImage);
+        nrf_delay_ms(500); // Analog clock 1s
+
+        // flash other events
+        button_ticks();
+        idle_state_handle();
+        __WFE();
+    }
 		
-	struct button btn1,btn2,btn3;
-		
-    button_init(&btn1, read_button1_GPIO, 0);
-    button_init(&btn2, read_button2_GPIO, 0);
-    button_init(&btn3, read_button3_GPIO, 0);
-		
-    button_attach(&btn1, PRESS_DOWN, BTN1_PRESS_DOWN_Handler);
-    button_attach(&btn1, PRESS_UP,   BTN1_PRESS_UP_Handler);
-    button_attach(&btn2, PRESS_DOWN, BTN2_PRESS_DOWN_Handler);
-    button_attach(&btn2, PRESS_UP,   BTN2_PRESS_UP_Handler);
-    button_attach(&btn3, PRESS_DOWN, BTN3_PRESS_DOWN_Handler);
-    button_attach(&btn3, PRESS_UP,   BTN3_PRESS_UP_Handler);
-    button_start(&btn1);
-    button_start(&btn2);
-    button_start(&btn3);
-		
-    // bsp_board_leds_off();
     while (1)
     {
 		button_ticks();
         idle_state_handle();
         bsp_board_led_invert(0);
-        NRF_LOG_FLUSH();
         __WFE();
         nrf_delay_ms(3000);
     }
