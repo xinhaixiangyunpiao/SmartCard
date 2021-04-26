@@ -58,8 +58,9 @@ target/smardCard_nrf52840/main.c.o: src/Application/main.c \
  inc/ble_advdata.h inc/ble_conn_params.h inc/ble_srv_common.h \
  inc/nrf_sdh.h inc/nrf_section_iter.h inc/nrf_sdh_ble.h inc/app_timer.h \
  inc/nrf_sortlist.h inc/app_button.h inc/ble_lbs.h inc/nrf_sdh_ble.h \
- inc/nrf_ble_gatt.h inc/nrf_ble_qwr.h inc/nrf_pwr_mgmt.h inc/nrf_uart.h \
- inc/nrf_uarte.h
+ inc/nrf_ble_gatt.h inc/nrf_ble_qwr.h inc/nrf_pwr_mgmt.h \
+ inc/nfc_t2t_lib.h inc/nfc_ndef_msg.h inc/nfc_ndef_record.h \
+ inc/nfc_text_rec.h inc/hardfault.h inc/nrf_uart.h inc/nrf_uarte.h
 
 c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\lib\gcc\arm-none-eabi\9.2.1\include\stdbool.h:
 
@@ -330,6 +331,16 @@ inc/nrf_ble_gatt.h:
 inc/nrf_ble_qwr.h:
 
 inc/nrf_pwr_mgmt.h:
+
+inc/nfc_t2t_lib.h:
+
+inc/nfc_ndef_msg.h:
+
+inc/nfc_ndef_record.h:
+
+inc/nfc_text_rec.h:
+
+inc/hardfault.h:
 
 inc/nrf_uart.h:
 

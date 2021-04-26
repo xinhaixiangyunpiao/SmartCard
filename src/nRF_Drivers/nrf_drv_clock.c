@@ -41,6 +41,8 @@
 #include <nordic_common.h>
 #include "nrf_drv_clock.h"
 
+#define NRF_CLOCK_ENABLED 1
+
 #if NRF_MODULE_ENABLED(NRF_CLOCK)
 
 #ifdef SOFTDEVICE_PRESENT

@@ -38,7 +38,14 @@ target/smardCard_nrf52840/nrf_drv_clock.c.o: \
  inc/sdk_errors.h inc/app_error_weak.h inc/soc/nrfx_coredep.h \
  inc/soc/nrfx_atomic.h inc/sdk_errors.h inc/sdk_resources.h \
  inc/nrf_sd_def.h inc/drivers/nrfx_errors.h inc/hal/nrf_clock.h \
- inc/nrfx_power_clock.h
+ inc/nrfx_power_clock.h inc/nrf_sdh.h inc/sdk_config.h \
+ inc/nrf_section_iter.h inc/nrf_section.h inc/app_util.h \
+ inc/nrf_sdh_soc.h inc/sdk_common.h \
+ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\string.h \
+ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\string.h \
+ inc/sdk_os.h inc/sdk_macros.h inc/hal/nrf_wdt.h inc/nrf_log.h \
+ inc/nrf_strerror.h inc/nrf_log_internal.h inc/nrf_log_instance.h \
+ inc/nrf_log_types.h
 
 inc/nordic_common.h:
 
@@ -183,3 +190,37 @@ inc/drivers/nrfx_errors.h:
 inc/hal/nrf_clock.h:
 
 inc/nrfx_power_clock.h:
+
+inc/nrf_sdh.h:
+
+inc/sdk_config.h:
+
+inc/nrf_section_iter.h:
+
+inc/nrf_section.h:
+
+inc/app_util.h:
+
+inc/nrf_sdh_soc.h:
+
+inc/sdk_common.h:
+
+c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\string.h:
+
+c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\string.h:
+
+inc/sdk_os.h:
+
+inc/sdk_macros.h:
+
+inc/hal/nrf_wdt.h:
+
+inc/nrf_log.h:
+
+inc/nrf_strerror.h:
+
+inc/nrf_log_internal.h:
+
+inc/nrf_log_instance.h:
+
+inc/nrf_log_types.h:

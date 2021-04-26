@@ -41,8 +41,8 @@
 #include "nrf_soc.h"
 #include "nrf_error.h"
 
-uint32_t sd_app_evt_wait(void)
-{
-    __WFE();
-    return NRF_SUCCESS;
-}
+// uint32_t sd_app_evt_wait(void)
+// {
+//     __WFE();
+//     return NRF_SUCCESS;
+// }
