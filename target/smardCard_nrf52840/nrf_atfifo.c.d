@@ -24,11 +24,11 @@ target/smardCard_nrf52840/nrf_atfifo.c.o: src/nRF_Libraries/nrf_atfifo.c \
  inc/nrf52840.h inc/core_cm4.h inc/cmsis_version.h inc/cmsis_compiler.h \
  inc/cmsis_gcc.h inc/mpu_armv7.h inc/system_nrf52840.h \
  inc/nrf52840_bitfields.h inc/nrf51_to_nrf52840.h inc/nrf52_to_nrf52840.h \
- inc/nrf_atfifo.h inc/sdk_config.h inc/nrf_assert.h inc/sdk_errors.h \
- inc/nrf_error.h inc/nrf_log_instance.h inc/nrf_section.h \
- inc/nrf_log_types.h inc/nrf_atfifo_internal.h inc/app_util.h \
- inc/nrf_log.h inc/sdk_common.h inc/sdk_os.h inc/sdk_macros.h \
- inc/nrf_strerror.h inc/nrf_log_internal.h
+ inc/nrf_mbr.h inc/nrf_svc.h inc/nrf_atfifo.h inc/sdk_config.h \
+ inc/nrf_assert.h inc/sdk_errors.h inc/nrf_error.h inc/nrf_log_instance.h \
+ inc/nrf_section.h inc/nrf_log_types.h inc/nrf_atfifo_internal.h \
+ inc/app_util.h inc/nrf_log.h inc/sdk_common.h inc/sdk_os.h \
+ inc/sdk_macros.h inc/nrf_strerror.h inc/nrf_log_internal.h
 
 c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\string.h:
 
@@ -99,6 +99,10 @@ inc/nrf52840_bitfields.h:
 inc/nrf51_to_nrf52840.h:
 
 inc/nrf52_to_nrf52840.h:
+
+inc/nrf_mbr.h:
+
+inc/nrf_svc.h:
 
 inc/nrf_atfifo.h:
 

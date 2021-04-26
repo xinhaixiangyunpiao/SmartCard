@@ -30,15 +30,17 @@ target/smardCard_nrf52840/app_timer2.c.o: src/nRF_Libraries/app_timer2.c \
  inc/system_nrf52840.h inc/nrf52840_bitfields.h inc/nrf51_to_nrf52840.h \
  inc/nrf52_to_nrf52840.h inc/compiler_abstraction.h inc/sdk_errors.h \
  inc/nrf_error.h inc/nordic_common.h inc/app_error_weak.h inc/app_util.h \
- inc/nrf_log_instance.h inc/nrf_section.h inc/nrf_log_types.h \
- inc/nrf_sortlist.h inc/nrf_atfifo.h inc/nrf_assert.h inc/nrf_sortlist.h \
- inc/nrf_delay.h inc/nrfx.h inc/nrfx_config.h inc/drivers/nrfx_common.h \
- inc/nrf.h inc/nrf_peripherals.h inc/nrf52840_peripherals.h \
- inc/nrfx_glue.h inc/legacy/apply_old_config.h inc/soc/nrfx_irqs.h \
- inc/soc/nrfx_irqs_nrf52840.h inc/nrf_assert.h inc/app_util.h \
- inc/nordic_common.h inc/app_util_platform.h inc/soc/nrfx_coredep.h \
+ inc/nrf_mbr.h inc/nrf_svc.h inc/nrf_log_instance.h inc/nrf_section.h \
+ inc/nrf_log_types.h inc/nrf_sortlist.h inc/nrf_atfifo.h inc/nrf_assert.h \
+ inc/nrf_sortlist.h inc/nrf_delay.h inc/nrfx.h inc/nrfx_config.h \
+ inc/drivers/nrfx_common.h inc/nrf.h inc/nrf_peripherals.h \
+ inc/nrf52840_peripherals.h inc/nrfx_glue.h inc/legacy/apply_old_config.h \
+ inc/soc/nrfx_irqs.h inc/soc/nrfx_irqs_nrf52840.h inc/nrf_assert.h \
+ inc/app_util.h inc/nordic_common.h inc/app_util_platform.h inc/nrf_soc.h \
+ inc/nrf_error_soc.h inc/nrf_nvic.h inc/soc/nrfx_coredep.h \
  inc/soc/nrfx_atomic.h inc/sdk_errors.h inc/sdk_resources.h \
- inc/drivers/nrfx_errors.h inc/nrf_log.h inc/sdk_common.h \
+ inc/nrf_sd_def.h inc/drivers/nrfx_errors.h inc/nrf_log.h \
+ inc/sdk_common.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\string.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\string.h \
  inc/sdk_os.h inc/sdk_macros.h inc/nrf_strerror.h inc/nrf_log_internal.h \
@@ -134,6 +136,10 @@ inc/app_error_weak.h:
 
 inc/app_util.h:
 
+inc/nrf_mbr.h:
+
+inc/nrf_svc.h:
+
 inc/nrf_log_instance.h:
 
 inc/nrf_section.h:
@@ -178,6 +184,12 @@ inc/nordic_common.h:
 
 inc/app_util_platform.h:
 
+inc/nrf_soc.h:
+
+inc/nrf_error_soc.h:
+
+inc/nrf_nvic.h:
+
 inc/soc/nrfx_coredep.h:
 
 inc/soc/nrfx_atomic.h:
@@ -185,6 +197,8 @@ inc/soc/nrfx_atomic.h:
 inc/sdk_errors.h:
 
 inc/sdk_resources.h:
+
+inc/nrf_sd_def.h:
 
 inc/drivers/nrfx_errors.h:
 

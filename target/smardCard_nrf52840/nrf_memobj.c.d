@@ -25,6 +25,7 @@ target/smardCard_nrf52840/nrf_memobj.c.o: src/nRF_Libraries/nrf_memobj.c \
  inc/nrf52840.h inc/core_cm4.h inc/cmsis_version.h inc/cmsis_compiler.h \
  inc/cmsis_gcc.h inc/mpu_armv7.h inc/system_nrf52840.h \
  inc/nrf52840_bitfields.h inc/nrf51_to_nrf52840.h inc/nrf52_to_nrf52840.h \
+ inc/nrf_soc.h inc/nrf_svc.h inc/nrf_error_soc.h inc/nrf_nvic.h \
  inc/nrf_assert.h inc/app_error.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\stdio.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\lib\gcc\arm-none-eabi\9.2.1\include\stdarg.h \
@@ -33,7 +34,7 @@ target/smardCard_nrf52840/nrf_memobj.c.o: src/nRF_Libraries/nrf_memobj.c \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\machine\types.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\stdio.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\lib\gcc\arm-none-eabi\9.2.1\include\stdbool.h \
- inc/nordic_common.h inc/app_error_weak.h inc/app_util.h \
+ inc/nordic_common.h inc/app_error_weak.h inc/app_util.h inc/nrf_mbr.h \
  inc/nrf_log_instance.h inc/nrf_section.h inc/nrf_log_types.h \
  inc/nrf_atomic.h inc/sdk_common.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\string.h \
@@ -116,6 +117,14 @@ inc/nrf51_to_nrf52840.h:
 
 inc/nrf52_to_nrf52840.h:
 
+inc/nrf_soc.h:
+
+inc/nrf_svc.h:
+
+inc/nrf_error_soc.h:
+
+inc/nrf_nvic.h:
+
 inc/nrf_assert.h:
 
 inc/app_error.h:
@@ -139,6 +148,8 @@ inc/nordic_common.h:
 inc/app_error_weak.h:
 
 inc/app_util.h:
+
+inc/nrf_mbr.h:
 
 inc/nrf_log_instance.h:
 

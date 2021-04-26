@@ -33,15 +33,17 @@ target/smardCard_nrf52840/app_error_weak.c.o: \
  inc/sdk_common.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\string.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\string.h \
- inc/sdk_config.h inc/sdk_os.h inc/app_util.h inc/sdk_macros.h \
- inc/nrf_assert.h inc/nrf_section.h inc/nrf_strerror.h \
+ inc/sdk_config.h inc/sdk_os.h inc/app_util.h inc/nrf_mbr.h inc/nrf_svc.h \
+ inc/sdk_macros.h inc/nrf_assert.h inc/nrf_section.h inc/nrf_strerror.h \
  inc/nrf_log_internal.h inc/nrf_log_instance.h inc/nrf_log_types.h \
  inc/nrf_log_ctrl.h inc/nrf_log_ctrl_internal.h \
  inc/nrf_log_backend_interface.h inc/nrf_memobj.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\stdlib.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\machine\stdlib.h \
- inc/nrf_balloc.h inc/app_util_platform.h inc/app_error.h \
- inc/app_util_platform.h inc/nrf_strerror.h
+ inc/nrf_balloc.h inc/app_util_platform.h inc/nrf_soc.h \
+ inc/nrf_error_soc.h inc/nrf_nvic.h inc/app_error.h \
+ inc/app_util_platform.h inc/nrf_strerror.h inc/nrf_sdm.h \
+ inc/nrf_error_sdm.h
 
 inc/app_error.h:
 
@@ -141,6 +143,10 @@ inc/sdk_os.h:
 
 inc/app_util.h:
 
+inc/nrf_mbr.h:
+
+inc/nrf_svc.h:
+
 inc/sdk_macros.h:
 
 inc/nrf_assert.h:
@@ -171,8 +177,18 @@ inc/nrf_balloc.h:
 
 inc/app_util_platform.h:
 
+inc/nrf_soc.h:
+
+inc/nrf_error_soc.h:
+
+inc/nrf_nvic.h:
+
 inc/app_error.h:
 
 inc/app_util_platform.h:
 
 inc/nrf_strerror.h:
+
+inc/nrf_sdm.h:
+
+inc/nrf_error_sdm.h:

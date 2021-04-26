@@ -26,11 +26,13 @@ target/smardCard_nrf52840/nrf_log_backend_uart.c.o: \
  inc/nrf52840.h inc/core_cm4.h inc/cmsis_version.h inc/cmsis_compiler.h \
  inc/cmsis_gcc.h inc/mpu_armv7.h inc/system_nrf52840.h \
  inc/nrf52840_bitfields.h inc/nrf51_to_nrf52840.h inc/nrf52_to_nrf52840.h \
- inc/sdk_macros.h inc/nrf_assert.h inc/nrf_log_backend_uart.h \
- inc/nrf_log_backend_interface.h inc/nrf_memobj.h \
+ inc/nrf_mbr.h inc/nrf_svc.h inc/sdk_macros.h inc/nrf_assert.h \
+ inc/nrf_log_backend_uart.h inc/nrf_log_backend_interface.h \
+ inc/nrf_memobj.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\stdlib.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\machine\stdlib.h \
- inc/nrf_balloc.h inc/app_util_platform.h inc/app_error.h \
+ inc/nrf_balloc.h inc/app_util_platform.h inc/nrf_soc.h \
+ inc/nrf_error_soc.h inc/nrf_nvic.h inc/app_error.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\stdio.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\lib\gcc\arm-none-eabi\9.2.1\include\stdarg.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\types.h \
@@ -46,8 +48,8 @@ target/smardCard_nrf52840/nrf_log_backend_uart.c.o: \
  inc/soc/nrfx_irqs_nrf52840.h inc/nrf_assert.h inc/app_util.h \
  inc/nordic_common.h inc/app_util_platform.h inc/soc/nrfx_coredep.h \
  inc/soc/nrfx_atomic.h inc/sdk_errors.h inc/sdk_resources.h \
- inc/drivers/nrfx_errors.h inc/nrfx_uarte.h inc/hal/nrf_uarte.h \
- inc/nrfx_uart.h inc/hal/nrf_uart.h inc/app_error.h
+ inc/nrf_sd_def.h inc/drivers/nrfx_errors.h inc/nrfx_uarte.h \
+ inc/hal/nrf_uarte.h inc/nrfx_uart.h inc/hal/nrf_uart.h inc/app_error.h
 
 inc/sdk_common.h:
 
@@ -129,6 +131,10 @@ inc/nrf51_to_nrf52840.h:
 
 inc/nrf52_to_nrf52840.h:
 
+inc/nrf_mbr.h:
+
+inc/nrf_svc.h:
+
 inc/sdk_macros.h:
 
 inc/nrf_assert.h:
@@ -146,6 +152,12 @@ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eab
 inc/nrf_balloc.h:
 
 inc/app_util_platform.h:
+
+inc/nrf_soc.h:
+
+inc/nrf_error_soc.h:
+
+inc/nrf_nvic.h:
 
 inc/app_error.h:
 
@@ -214,6 +226,8 @@ inc/soc/nrfx_atomic.h:
 inc/sdk_errors.h:
 
 inc/sdk_resources.h:
+
+inc/nrf_sd_def.h:
 
 inc/drivers/nrfx_errors.h:
 

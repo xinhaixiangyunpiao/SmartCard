@@ -26,7 +26,8 @@ target/smardCard_nrf52840/nrf_atomic.c.o: src/nRF_Libraries/nrf_atomic.c \
  inc/nrf52840.h inc/core_cm4.h inc/cmsis_version.h inc/cmsis_compiler.h \
  inc/cmsis_gcc.h inc/mpu_armv7.h inc/system_nrf52840.h \
  inc/nrf52840_bitfields.h inc/nrf51_to_nrf52840.h inc/nrf52_to_nrf52840.h \
- inc/sdk_macros.h inc/nrf_assert.h inc/nrf_atomic_internal.h
+ inc/nrf_mbr.h inc/nrf_svc.h inc/sdk_macros.h inc/nrf_assert.h \
+ inc/nrf_atomic_internal.h
 
 inc/nrf_atomic.h:
 
@@ -109,6 +110,10 @@ inc/nrf52840_bitfields.h:
 inc/nrf51_to_nrf52840.h:
 
 inc/nrf52_to_nrf52840.h:
+
+inc/nrf_mbr.h:
+
+inc/nrf_svc.h:
 
 inc/sdk_macros.h:
 

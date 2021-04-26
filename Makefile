@@ -15,11 +15,20 @@ SRC_FILES += \
   ./src/Board_Support/bsp.c \
   ./src/Device/gcc_startup_nrf52840.S \
   ./src/Device/system_nrf52840.c \
+  ./src/nRF_BLE/ble_advdata.c \
+  ./src/nRF_BLE/ble_conn_params.c \
+  ./src/nRF_BLE/ble_conn_state.c \
+  ./src/nRF_BLE/ble_srv_common.c \
+  ./src/nRF_BLE/nrf_ble_gatt.c \
+  ./src/nRF_BLE/nrf_ble_qwr.c \
+  ./src/nRF_BLE_Services/ble_lbs.c \
   ./src/nRF_Drivers/app_fifo.c \
   ./src/nRF_Drivers/app_uart_fifo.c \
+  ./src/nRF_Drivers/nrf_drv_clock.c \
   ./src/nRF_Drivers/nrf_drv_spi.c \
   ./src/nRF_Drivers/nrf_drv_uart.c \
   ./src/nRF_Drivers/nrfx_atomic.c \
+  ./src/nRF_Drivers/nrfx_clock.c \
   ./src/nRF_Drivers/nrfx_gpiote.c \
   ./src/nRF_Drivers/nrfx_prs.c \
   ./src/nRF_Drivers/nrfx_spi.c \
@@ -35,14 +44,18 @@ SRC_FILES += \
   ./src/nRF_Libraries/app_timer2.c \
   ./src/nRF_Libraries/app_util_platform.c \
   ./src/nRF_Libraries/drv_rtc.c \
+  ./src/nRF_Libraries/hardfault_implementation.c \
   ./src/nRF_Libraries/nrf_assert.c \
   ./src/nRF_Libraries/nrf_atfifo.c \
+  ./src/nRF_Libraries/nrf_atflags.c \
   ./src/nRF_Libraries/nrf_atomic.c \
   ./src/nRF_Libraries/nrf_balloc.c \
   ./src/nRF_Libraries/nrf_fprintf.c \
   ./src/nRF_Libraries/nrf_fprintf_format.c \
   ./src/nRF_Libraries/nrf_memobj.c \
+  ./src/nRF_Libraries/nrf_pwr_mgmt.c \
   ./src/nRF_Libraries/nrf_ringbuf.c \
+  ./src/nRF_Libraries/nrf_section_iter.c \
   ./src/nRF_Libraries/nrf_sortlist.c \
   ./src/nRF_Libraries/nrf_strerror.c \
   ./src/nRF_Log/nrf_log_backend_rtt.c \
@@ -54,6 +67,10 @@ SRC_FILES += \
   ./src/nRF_Segger_RTT/SEGGER_RTT.c \
   ./src/nRF_Segger_RTT/SEGGER_RTT_Syscalls_GCC.c \
   ./src/nRF_Segger_RTT/SEGGER_RTT_printf.c \
+  ./src/nRF_SoftDevice/nrf_sdh.c \
+  ./src/nRF_SoftDevice/nrf_sdh_ble.c \
+  ./src/nRF_SoftDevice/nrf_sdh_soc.c \
+  ./src/UTF8-UTF16-converter/utf.c \
 
 # Include folders common to all targets
 INC_FOLDERS += ./inc
@@ -72,6 +89,9 @@ CFLAGS += -DBOARD_PCA10056
 CFLAGS += -DCONFIG_GPIO_AS_PINRESET
 CFLAGS += -DFLOAT_ABI_HARD
 CFLAGS += -DNRF52840_XXAA
+CFLAGS += -DNRF_SD_BLE_API_VERSION=7
+CFLAGS += -DS140
+CFLAGS += -DSOFTDEVICE_PRESENT
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb -mabi=aapcs
 CFLAGS += -Wall -Werror
@@ -94,6 +114,9 @@ ASMFLAGS += -DBOARD_PCA10056
 ASMFLAGS += -DCONFIG_GPIO_AS_PINRESET
 ASMFLAGS += -DFLOAT_ABI_HARD
 ASMFLAGS += -DNRF52840_XXAA
+ASMFLAGS += -DNRF_SD_BLE_API_VERSION=7
+ASMFLAGS += -DS140
+ASMFLAGS += -DSOFTDEVICE_PRESENT
 
 # Linker flags
 LDFLAGS += -O3 -g3
