@@ -3,6 +3,8 @@
         "app_util_platform.h": "c",
         "nrf_drv_spi.h": "c",
         "nrf_soc.h": "c",
-        "nrf_nvic.h": "c"
+        "nrf_nvic.h": "c",
+        "ble_conn_params.h": "c",
+        "ble_advdata.h": "c"
     }
 }

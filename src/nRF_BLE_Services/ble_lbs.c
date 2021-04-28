@@ -53,10 +53,10 @@ static void on_write(ble_lbs_t * p_lbs, ble_evt_t const * p_ble_evt)
     ble_gatts_evt_write_t const * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 
     if (   (p_evt_write->handle == p_lbs->led_char_handles.value_handle)
-        && (p_evt_write->len == 1)
+        // && (p_evt_write->len == 1)
         && (p_lbs->led_write_handler != NULL))
     {
-        p_lbs->led_write_handler(p_ble_evt->evt.gap_evt.conn_handle, p_lbs, p_evt_write->data[0]);
+        p_lbs->led_write_handler(p_ble_evt->evt.gap_evt.conn_handle, p_lbs, p_evt_write->data);
     }
 }
 
@@ -102,8 +102,8 @@ uint32_t ble_lbs_init(ble_lbs_t * p_lbs, const ble_lbs_init_t * p_lbs_init)
     memset(&add_char_params, 0, sizeof(add_char_params));
     add_char_params.uuid              = LBS_UUID_BUTTON_CHAR;
     add_char_params.uuid_type         = p_lbs->uuid_type;
-    add_char_params.init_len          = sizeof(uint8_t);
-    add_char_params.max_len           = sizeof(uint8_t);
+    add_char_params.init_len          = 20;
+    add_char_params.max_len           = 20;
     add_char_params.char_props.read   = 1;
     add_char_params.char_props.notify = 1;
 
@@ -122,8 +122,8 @@ uint32_t ble_lbs_init(ble_lbs_t * p_lbs, const ble_lbs_init_t * p_lbs_init)
     memset(&add_char_params, 0, sizeof(add_char_params));
     add_char_params.uuid             = LBS_UUID_LED_CHAR;
     add_char_params.uuid_type        = p_lbs->uuid_type;
-    add_char_params.init_len         = sizeof(uint8_t);
-    add_char_params.max_len          = sizeof(uint8_t);
+    add_char_params.init_len         = 20;
+    add_char_params.max_len          = 20;
     add_char_params.char_props.read  = 1;
     add_char_params.char_props.write = 1;
 

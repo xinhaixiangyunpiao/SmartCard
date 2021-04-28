@@ -40,6 +40,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "nrf_drv_spi.h"
 #include "app_util_platform.h"
 #include "nrf_gpio.h"
@@ -170,6 +171,289 @@ static const uint8_t pl_code[] = {'P', 'L'};
 
 /* Buffer used to hold an NFC NDEF message. */
 uint8_t m_ndef_msg_buf[256];
+
+void gpio_init(void){
+	nrf_gpio_cfg_output(EPD_RST_PIN);
+	nrf_gpio_cfg_output(EPD_DC_PIN);
+	nrf_gpio_cfg_output(EPD_CS_PIN);
+	nrf_gpio_cfg_input(EPD_BUSY_PIN,NRF_GPIO_PIN_NOPULL);
+}
+
+int DEV_Module_Init(void)
+{
+    nrf_gpio_pin_write(EPD_DC_PIN, 0);
+    nrf_gpio_pin_write(EPD_CS_PIN, 0);
+    nrf_gpio_pin_write(EPD_RST_PIN, 1);
+		return 0;
+}
+
+/******************************************************************************
+function :	Software reset
+parameter:
+******************************************************************************/
+static void EPD_1IN54_V2_Reset(void)
+{
+    nrf_gpio_pin_write(EPD_RST_PIN, 1);
+    nrf_delay_ms(200);
+    nrf_gpio_pin_write(EPD_RST_PIN, 0);
+    nrf_delay_ms(10);
+    nrf_gpio_pin_write(EPD_RST_PIN, 1);
+    nrf_delay_ms(200);
+}
+
+/******************************************************************************
+function :	Wait until the busy_pin goes LOW
+parameter:
+******************************************************************************/
+static void EPD_1IN54_V2_ReadBusy(void)
+{
+    while(nrf_gpio_pin_read(EPD_BUSY_PIN) == 1) {      //LOW: idle, HIGH: busy
+        nrf_delay_ms(100);
+    }
+}
+
+/******************************************************************************
+function :	send command
+parameter:
+     Reg : Command register
+******************************************************************************/
+static void EPD_1IN54_V2_SendCommand(uint8_t Reg)
+{
+    nrf_gpio_pin_write(EPD_DC_PIN, 0);
+//    nrf_gpio_pin_write(EPD_CS_PIN, 0);
+		SPI_ReadWriteData(&Reg, m_rx_buf, sizeof(uint8_t));
+//    nrf_drv_spi_transfer(&spi, &Reg, 1, m_rx_buf, m_length);
+//    nrf_gpio_pin_write(EPD_CS_PIN, 1);
+}
+
+/******************************************************************************
+function :	send data
+parameter:
+    Data : Write data
+******************************************************************************/
+static void EPD_1IN54_V2_SendData(uint8_t Data)
+{
+    nrf_gpio_pin_write(EPD_DC_PIN, 1);
+//    nrf_gpio_pin_write(EPD_CS_PIN, 0);
+	SPI_ReadWriteData(&Data, m_rx_buf, sizeof(uint8_t));
+//    nrf_drv_spi_transfer(&spi, &Data, 1, m_rx_buf, m_length);
+//    nrf_gpio_pin_write(EPD_CS_PIN, 1);
+}
+
+/******************************************************************************
+function :	Turn On Display full
+parameter:
+******************************************************************************/
+static void EPD_1IN54_V2_TurnOnDisplay(void)
+{
+    EPD_1IN54_V2_SendCommand(0x22);
+    EPD_1IN54_V2_SendData(0xF7);
+    EPD_1IN54_V2_SendCommand(0x20);
+    EPD_1IN54_V2_ReadBusy();
+}
+
+/******************************************************************************
+function :	Initialize the e-Paper register
+parameter:
+******************************************************************************/
+void EPD_1IN54_V2_Init(void)
+{
+    EPD_1IN54_V2_Reset();
+    EPD_1IN54_V2_ReadBusy();
+    EPD_1IN54_V2_SendCommand(0x12);  //SWRESET
+    EPD_1IN54_V2_ReadBusy();
+
+    EPD_1IN54_V2_SendCommand(0x01); //Driver output control
+    EPD_1IN54_V2_SendData(0xC7);
+    EPD_1IN54_V2_SendData(0x00);
+    EPD_1IN54_V2_SendData(0x01);
+
+    EPD_1IN54_V2_SendCommand(0x11); //data entry mode
+    EPD_1IN54_V2_SendData(0x01);
+
+    EPD_1IN54_V2_SendCommand(0x44); //set Ram-X address start/end position
+    EPD_1IN54_V2_SendData(0x00);
+    EPD_1IN54_V2_SendData(0x18);    //0x0C-->(18+1)*8=200
+
+    EPD_1IN54_V2_SendCommand(0x45); //set Ram-Y address start/end position
+    EPD_1IN54_V2_SendData(0xC7);   //0xC7-->(199+1)=200
+    EPD_1IN54_V2_SendData(0x00);
+    EPD_1IN54_V2_SendData(0x00);
+    EPD_1IN54_V2_SendData(0x00);
+
+    EPD_1IN54_V2_SendCommand(0x3C); //BorderWavefrom
+    EPD_1IN54_V2_SendData(0x01);
+
+    EPD_1IN54_V2_SendCommand(0x18);
+    EPD_1IN54_V2_SendData(0x80);
+
+    EPD_1IN54_V2_SendCommand(0x22); // //Load Temperature and waveform setting.
+    EPD_1IN54_V2_SendData(0XB1);
+    EPD_1IN54_V2_SendCommand(0x20);
+
+    EPD_1IN54_V2_SendCommand(0x4E);   // set RAM x address count to 0;
+    EPD_1IN54_V2_SendData(0x00);
+    EPD_1IN54_V2_SendCommand(0x4F);   // set RAM y address count to 0X199;
+    EPD_1IN54_V2_SendData(0xC7);
+    EPD_1IN54_V2_SendData(0x00);
+    EPD_1IN54_V2_ReadBusy();
+}
+
+void EPD_1IN54_V2_Display(UBYTE *Image)
+{
+    UWORD Width, Height;
+    Width = (EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1);
+    Height = EPD_1IN54_V2_HEIGHT;
+
+    int Addr = 0;
+    EPD_1IN54_V2_SendCommand(0x24);
+    for (UWORD j = 0; j < Height; j++) {
+        for (UWORD i = 0; i < Width; i++) {
+            Addr = i + j * Width;
+            EPD_1IN54_V2_SendData(Image[Addr]);
+        }
+    }
+    EPD_1IN54_V2_TurnOnDisplay();
+}
+
+/******************************************************************************
+function :	Clear screen
+parameter:
+******************************************************************************/
+void EPD_1IN54_V2_Clear(void)
+{
+    uint16_t Width, Height;
+    Width = (EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1);
+    Height = EPD_1IN54_V2_HEIGHT;
+
+    EPD_1IN54_V2_SendCommand(0x24);
+    for (uint16_t j = 0; j < Height; j++) {
+        for (uint16_t i = 0; i < Width; i++) {
+            EPD_1IN54_V2_SendData(0X00);
+        }
+    }
+    EPD_1IN54_V2_TurnOnDisplay();
+}
+
+uint8_t read_button1_GPIO(void)
+{
+    nrf_gpio_cfg_input(3,NRF_GPIO_PIN_PULLUP);
+    return nrf_gpio_pin_read(3);
+}
+
+uint8_t read_button2_GPIO(void)
+{
+    nrf_gpio_cfg_input(4,NRF_GPIO_PIN_PULLUP);
+    return nrf_gpio_pin_read(4);
+}
+
+uint8_t read_button3_GPIO(void)
+{
+    nrf_gpio_cfg_input(35,NRF_GPIO_PIN_PULLUP);
+    return nrf_gpio_pin_read(35);
+}
+
+void BTN1_PRESS_DOWN_Handler(void *btn)
+{
+    bsp_board_led_on(0);
+}
+
+
+void BTN1_PRESS_UP_Handler(void *btn)
+{
+    bsp_board_led_off(0);
+}
+
+void BTN2_PRESS_DOWN_Handler(void *btn)
+{
+    bsp_board_led_on(1);
+}
+
+
+void BTN2_PRESS_UP_Handler(void *btn)
+{
+    bsp_board_led_off(1);
+}
+
+void BTN3_PRESS_DOWN_Handler(void *btn)
+{
+    bsp_board_led_on(2);
+}
+
+
+void BTN3_PRESS_UP_Handler(void *btn)
+{
+    bsp_board_led_off(2);
+}
+
+/******************************************************************************
+function :	Turn On Display part
+parameter:
+******************************************************************************/
+static void EPD_1IN54_V2_TurnOnDisplayPart(void)
+{
+    EPD_1IN54_V2_SendCommand(0x22);
+    EPD_1IN54_V2_SendData(0xFF);
+    EPD_1IN54_V2_SendCommand(0x20);
+    EPD_1IN54_V2_ReadBusy();
+}
+
+/******************************************************************************
+function :	 The image of the previous frame must be uploaded, otherwise the
+		         first few seconds will display an exception.
+parameter:
+******************************************************************************/
+void EPD_1IN54_V2_DisplayPartBaseImage(UBYTE *Image)
+{
+    UWORD Width, Height;
+    Width = (EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1);
+    Height = EPD_1IN54_V2_HEIGHT;
+
+    UDOUBLE Addr = 0;
+    EPD_1IN54_V2_SendCommand(0x24);
+    for (UWORD j = 0; j < Height; j++) {
+        for (UWORD i = 0; i < Width; i++) {
+            Addr = i + j * Width;
+            EPD_1IN54_V2_SendData(Image[Addr]);
+        }
+    }
+    EPD_1IN54_V2_SendCommand(0x26);
+    for (UWORD j = 0; j < Height; j++) {
+        for (UWORD i = 0; i < Width; i++) {
+            Addr = i + j * Width;
+            EPD_1IN54_V2_SendData(Image[Addr]);
+        }
+    }
+    EPD_1IN54_V2_TurnOnDisplayPart();
+}
+
+/******************************************************************************
+function :	Sends the image buffer in RAM to e-Paper and displays
+parameter:
+******************************************************************************/
+void EPD_1IN54_V2_DisplayPart(UBYTE *Image)
+{
+    UWORD Width, Height;
+    Width = (EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1);
+    Height = EPD_1IN54_V2_HEIGHT;
+
+    nrf_gpio_pin_write(EPD_RST_PIN, 0);
+    nrf_delay_ms(10);
+    nrf_gpio_pin_write(EPD_RST_PIN, 1);
+    nrf_delay_ms(10);
+    EPD_1IN54_V2_SendCommand(0x3C); //BorderWavefrom
+    EPD_1IN54_V2_SendData(0x80);
+	
+    UDOUBLE Addr = 0;
+    EPD_1IN54_V2_SendCommand(0x24);
+    for (UWORD j = 0; j < Height; j++) {
+        for (UWORD i = 0; i < Width; i++) {
+            Addr = i + j * Width;
+            EPD_1IN54_V2_SendData(Image[Addr]);
+        }
+    }
+    EPD_1IN54_V2_TurnOnDisplayPart();
+}
 
 /**
  * @brief Callback function for handling NFC events.
@@ -411,18 +695,42 @@ static void nrf_qwr_error_handler(uint32_t nrf_error)
  * @param[in] p_lbs     Instance of LED Button Service to which the write applies.
  * @param[in] led_state Written/desired state of the LED.
  */
-static void led_write_handler(uint16_t conn_handle, ble_lbs_t * p_lbs, uint8_t led_state)
+// static void led_write_handler(uint16_t conn_handle, ble_lbs_t * p_lbs, uint8_t led_state)
+// {
+//     if (led_state)
+//     {
+//         bsp_board_led_on(LEDBUTTON_LED);
+//         NRF_LOG_INFO("Received LED ON!");
+//     }
+//     else
+//     {
+//         bsp_board_led_off(LEDBUTTON_LED);
+//         NRF_LOG_INFO("Received LED OFF!");
+//     }
+// }
+
+static void led_write_handler(uint16_t conn_handle, ble_lbs_t * p_lbs, const uint8_t* data)
 {
-    if (led_state)
-    {
-        bsp_board_led_on(LEDBUTTON_LED);
-        NRF_LOG_INFO("Received LED ON!");
+// ÉèÖÃ±³¾°Í¼
+	unsigned char *BlackImage;
+    /* you have to edit the startup_stm32fxxx.s file and set a big enough heap size */
+    unsigned short Imagesize = ((EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1)) * EPD_1IN54_V2_HEIGHT;
+    if((BlackImage = (UBYTE *)malloc(Imagesize)) == NULL) {
+        return ;
     }
-    else
-    {
-        bsp_board_led_off(LEDBUTTON_LED);
-        NRF_LOG_INFO("Received LED OFF!");
-    }
+    // int i = 0;
+    // char* pData = (char*)malloc(len);
+    // for(i = 0; i < len; i++){
+    //     pData[i] = data[i];
+    // }
+
+    // ÏÔÊ¾ÎÄ×Ö
+    Paint_NewImage(BlackImage, EPD_1IN54_V2_WIDTH, EPD_1IN54_V2_HEIGHT, 0, WHITE);
+    Paint_SelectImage(BlackImage);
+    Paint_Clear(WHITE);
+    Paint_DrawString_EN(100, 45, (char*)data, &Font20, BLACK, WHITE);
+    EPD_1IN54_V2_Display(BlackImage);
+    nrf_delay_ms(200);
 }
 
 
@@ -722,289 +1030,6 @@ void spi_event_handler(nrf_drv_spi_evt_t const * p_event,
     }
 }
 
-void gpio_init(void){
-	nrf_gpio_cfg_output(EPD_RST_PIN);
-	nrf_gpio_cfg_output(EPD_DC_PIN);
-	nrf_gpio_cfg_output(EPD_CS_PIN);
-	nrf_gpio_cfg_input(EPD_BUSY_PIN,NRF_GPIO_PIN_NOPULL);
-}
-
-int DEV_Module_Init(void)
-{
-    nrf_gpio_pin_write(EPD_DC_PIN, 0);
-    nrf_gpio_pin_write(EPD_CS_PIN, 0);
-    nrf_gpio_pin_write(EPD_RST_PIN, 1);
-		return 0;
-}
-
-/******************************************************************************
-function :	Software reset
-parameter:
-******************************************************************************/
-static void EPD_1IN54_V2_Reset(void)
-{
-    nrf_gpio_pin_write(EPD_RST_PIN, 1);
-    nrf_delay_ms(200);
-    nrf_gpio_pin_write(EPD_RST_PIN, 0);
-    nrf_delay_ms(10);
-    nrf_gpio_pin_write(EPD_RST_PIN, 1);
-    nrf_delay_ms(200);
-}
-
-/******************************************************************************
-function :	Wait until the busy_pin goes LOW
-parameter:
-******************************************************************************/
-static void EPD_1IN54_V2_ReadBusy(void)
-{
-    while(nrf_gpio_pin_read(EPD_BUSY_PIN) == 1) {      //LOW: idle, HIGH: busy
-        nrf_delay_ms(100);
-    }
-}
-
-/******************************************************************************
-function :	send command
-parameter:
-     Reg : Command register
-******************************************************************************/
-static void EPD_1IN54_V2_SendCommand(uint8_t Reg)
-{
-    nrf_gpio_pin_write(EPD_DC_PIN, 0);
-//    nrf_gpio_pin_write(EPD_CS_PIN, 0);
-		SPI_ReadWriteData(&Reg, m_rx_buf, sizeof(uint8_t));
-//    nrf_drv_spi_transfer(&spi, &Reg, 1, m_rx_buf, m_length);
-//    nrf_gpio_pin_write(EPD_CS_PIN, 1);
-}
-
-/******************************************************************************
-function :	send data
-parameter:
-    Data : Write data
-******************************************************************************/
-static void EPD_1IN54_V2_SendData(uint8_t Data)
-{
-    nrf_gpio_pin_write(EPD_DC_PIN, 1);
-//    nrf_gpio_pin_write(EPD_CS_PIN, 0);
-	SPI_ReadWriteData(&Data, m_rx_buf, sizeof(uint8_t));
-//    nrf_drv_spi_transfer(&spi, &Data, 1, m_rx_buf, m_length);
-//    nrf_gpio_pin_write(EPD_CS_PIN, 1);
-}
-
-/******************************************************************************
-function :	Turn On Display full
-parameter:
-******************************************************************************/
-static void EPD_1IN54_V2_TurnOnDisplay(void)
-{
-    EPD_1IN54_V2_SendCommand(0x22);
-    EPD_1IN54_V2_SendData(0xF7);
-    EPD_1IN54_V2_SendCommand(0x20);
-    EPD_1IN54_V2_ReadBusy();
-}
-
-/******************************************************************************
-function :	Initialize the e-Paper register
-parameter:
-******************************************************************************/
-void EPD_1IN54_V2_Init(void)
-{
-    EPD_1IN54_V2_Reset();
-    EPD_1IN54_V2_ReadBusy();
-    EPD_1IN54_V2_SendCommand(0x12);  //SWRESET
-    EPD_1IN54_V2_ReadBusy();
-
-    EPD_1IN54_V2_SendCommand(0x01); //Driver output control
-    EPD_1IN54_V2_SendData(0xC7);
-    EPD_1IN54_V2_SendData(0x00);
-    EPD_1IN54_V2_SendData(0x01);
-
-    EPD_1IN54_V2_SendCommand(0x11); //data entry mode
-    EPD_1IN54_V2_SendData(0x01);
-
-    EPD_1IN54_V2_SendCommand(0x44); //set Ram-X address start/end position
-    EPD_1IN54_V2_SendData(0x00);
-    EPD_1IN54_V2_SendData(0x18);    //0x0C-->(18+1)*8=200
-
-    EPD_1IN54_V2_SendCommand(0x45); //set Ram-Y address start/end position
-    EPD_1IN54_V2_SendData(0xC7);   //0xC7-->(199+1)=200
-    EPD_1IN54_V2_SendData(0x00);
-    EPD_1IN54_V2_SendData(0x00);
-    EPD_1IN54_V2_SendData(0x00);
-
-    EPD_1IN54_V2_SendCommand(0x3C); //BorderWavefrom
-    EPD_1IN54_V2_SendData(0x01);
-
-    EPD_1IN54_V2_SendCommand(0x18);
-    EPD_1IN54_V2_SendData(0x80);
-
-    EPD_1IN54_V2_SendCommand(0x22); // //Load Temperature and waveform setting.
-    EPD_1IN54_V2_SendData(0XB1);
-    EPD_1IN54_V2_SendCommand(0x20);
-
-    EPD_1IN54_V2_SendCommand(0x4E);   // set RAM x address count to 0;
-    EPD_1IN54_V2_SendData(0x00);
-    EPD_1IN54_V2_SendCommand(0x4F);   // set RAM y address count to 0X199;
-    EPD_1IN54_V2_SendData(0xC7);
-    EPD_1IN54_V2_SendData(0x00);
-    EPD_1IN54_V2_ReadBusy();
-}
-
-void EPD_1IN54_V2_Display(UBYTE *Image)
-{
-    UWORD Width, Height;
-    Width = (EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1);
-    Height = EPD_1IN54_V2_HEIGHT;
-
-    int Addr = 0;
-    EPD_1IN54_V2_SendCommand(0x24);
-    for (UWORD j = 0; j < Height; j++) {
-        for (UWORD i = 0; i < Width; i++) {
-            Addr = i + j * Width;
-            EPD_1IN54_V2_SendData(Image[Addr]);
-        }
-    }
-    EPD_1IN54_V2_TurnOnDisplay();
-}
-
-/******************************************************************************
-function :	Clear screen
-parameter:
-******************************************************************************/
-void EPD_1IN54_V2_Clear(void)
-{
-    uint16_t Width, Height;
-    Width = (EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1);
-    Height = EPD_1IN54_V2_HEIGHT;
-
-    EPD_1IN54_V2_SendCommand(0x24);
-    for (uint16_t j = 0; j < Height; j++) {
-        for (uint16_t i = 0; i < Width; i++) {
-            EPD_1IN54_V2_SendData(0X00);
-        }
-    }
-    EPD_1IN54_V2_TurnOnDisplay();
-}
-
-uint8_t read_button1_GPIO(void)
-{
-    nrf_gpio_cfg_input(3,NRF_GPIO_PIN_PULLUP);
-    return nrf_gpio_pin_read(3);
-}
-
-uint8_t read_button2_GPIO(void)
-{
-    nrf_gpio_cfg_input(4,NRF_GPIO_PIN_PULLUP);
-    return nrf_gpio_pin_read(4);
-}
-
-uint8_t read_button3_GPIO(void)
-{
-    nrf_gpio_cfg_input(35,NRF_GPIO_PIN_PULLUP);
-    return nrf_gpio_pin_read(35);
-}
-
-void BTN1_PRESS_DOWN_Handler(void *btn)
-{
-    bsp_board_led_on(0);
-}
-
-
-void BTN1_PRESS_UP_Handler(void *btn)
-{
-    bsp_board_led_off(0);
-}
-
-void BTN2_PRESS_DOWN_Handler(void *btn)
-{
-    bsp_board_led_on(1);
-}
-
-
-void BTN2_PRESS_UP_Handler(void *btn)
-{
-    bsp_board_led_off(1);
-}
-
-void BTN3_PRESS_DOWN_Handler(void *btn)
-{
-    bsp_board_led_on(2);
-}
-
-
-void BTN3_PRESS_UP_Handler(void *btn)
-{
-    bsp_board_led_off(2);
-}
-
-/******************************************************************************
-function :	Turn On Display part
-parameter:
-******************************************************************************/
-static void EPD_1IN54_V2_TurnOnDisplayPart(void)
-{
-    EPD_1IN54_V2_SendCommand(0x22);
-    EPD_1IN54_V2_SendData(0xFF);
-    EPD_1IN54_V2_SendCommand(0x20);
-    EPD_1IN54_V2_ReadBusy();
-}
-
-/******************************************************************************
-function :	 The image of the previous frame must be uploaded, otherwise the
-		         first few seconds will display an exception.
-parameter:
-******************************************************************************/
-void EPD_1IN54_V2_DisplayPartBaseImage(UBYTE *Image)
-{
-    UWORD Width, Height;
-    Width = (EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1);
-    Height = EPD_1IN54_V2_HEIGHT;
-
-    UDOUBLE Addr = 0;
-    EPD_1IN54_V2_SendCommand(0x24);
-    for (UWORD j = 0; j < Height; j++) {
-        for (UWORD i = 0; i < Width; i++) {
-            Addr = i + j * Width;
-            EPD_1IN54_V2_SendData(Image[Addr]);
-        }
-    }
-    EPD_1IN54_V2_SendCommand(0x26);
-    for (UWORD j = 0; j < Height; j++) {
-        for (UWORD i = 0; i < Width; i++) {
-            Addr = i + j * Width;
-            EPD_1IN54_V2_SendData(Image[Addr]);
-        }
-    }
-    EPD_1IN54_V2_TurnOnDisplayPart();
-}
-
-/******************************************************************************
-function :	Sends the image buffer in RAM to e-Paper and displays
-parameter:
-******************************************************************************/
-void EPD_1IN54_V2_DisplayPart(UBYTE *Image)
-{
-    UWORD Width, Height;
-    Width = (EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1);
-    Height = EPD_1IN54_V2_HEIGHT;
-
-    nrf_gpio_pin_write(EPD_RST_PIN, 0);
-    nrf_delay_ms(10);
-    nrf_gpio_pin_write(EPD_RST_PIN, 1);
-    nrf_delay_ms(10);
-    EPD_1IN54_V2_SendCommand(0x3C); //BorderWavefrom
-    EPD_1IN54_V2_SendData(0x80);
-	
-    UDOUBLE Addr = 0;
-    EPD_1IN54_V2_SendCommand(0x24);
-    for (UWORD j = 0; j < Height; j++) {
-        for (UWORD i = 0; i < Width; i++) {
-            Addr = i + j * Width;
-            EPD_1IN54_V2_SendData(Image[Addr]);
-        }
-    }
-    EPD_1IN54_V2_TurnOnDisplayPart();
-}
-
 int main(void)
 {	
     // gpio led init
@@ -1117,7 +1142,7 @@ int main(void)
         idle_state_handle();
         __WFE();
     }
-		
+
     while (1)
     {
 		button_ticks();

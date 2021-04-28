@@ -24,6 +24,8 @@ target/smardCard_nrf52840/main.c.o: src/Application/main.c \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\_pthreadtypes.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\machine\types.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\stdio.h \
+ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\stdlib.h \
+ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\machine\stdlib.h \
  inc/nrf_drv_spi.h inc/nrfx.h inc/nrfx_config.h inc/drivers/nrfx_common.h \
  inc/nrf.h inc/nrf52840.h inc/core_cm4.h inc/cmsis_version.h \
  inc/cmsis_compiler.h inc/cmsis_gcc.h inc/mpu_armv7.h \
@@ -47,11 +49,9 @@ target/smardCard_nrf52840/main.c.o: src/Application/main.c \
  inc/app_util.h inc/sdk_macros.h inc/nrf_section.h inc/nrf_strerror.h \
  inc/nrf_log_internal.h inc/nrf_log_instance.h inc/nrf_log_types.h \
  inc/nrf_log_ctrl.h inc/nrf_log_ctrl_internal.h \
- inc/nrf_log_backend_interface.h inc/nrf_memobj.h \
- c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\stdlib.h \
- c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\machine\stdlib.h \
- inc/nrf_balloc.h inc/nrf_log_default_backends.h inc/board_spi.h \
- inc/GUI_Paint.h inc/DEV_Config.h \
+ inc/nrf_log_backend_interface.h inc/nrf_memobj.h inc/nrf_balloc.h \
+ inc/nrf_log_default_backends.h inc/board_spi.h inc/GUI_Paint.h \
+ inc/DEV_Config.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\unistd.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\unistd.h \
  c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\errno.h \
@@ -116,6 +116,10 @@ c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eab
 c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\machine\types.h:
 
 c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\sys\stdio.h:
+
+c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\stdlib.h:
+
+c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\machine\stdlib.h:
 
 inc/nrf_drv_spi.h:
 
@@ -264,10 +268,6 @@ inc/nrf_log_ctrl_internal.h:
 inc/nrf_log_backend_interface.h:
 
 inc/nrf_memobj.h:
-
-c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\stdlib.h:
-
-c:\program\ files\ (x86)\gnu\ tools\ arm\ embedded\9\ 2019-q4-major\arm-none-eabi\include\machine\stdlib.h:
 
 inc/nrf_balloc.h:
 
