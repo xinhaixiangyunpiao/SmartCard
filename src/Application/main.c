@@ -172,6 +172,10 @@ static const uint8_t pl_code[] = {'P', 'L'};
 /* Buffer used to hold an NFC NDEF message. */
 uint8_t m_ndef_msg_buf[256];
 
+unsigned char *BlackImage;
+/* you have to edit the startup_stm32fxxx.s file and set a big enough heap size */
+unsigned short Imagesize = ((EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1)) * EPD_1IN54_V2_HEIGHT;
+
 void gpio_init(void){
 	nrf_gpio_cfg_output(EPD_RST_PIN);
 	nrf_gpio_cfg_output(EPD_DC_PIN);
@@ -689,46 +693,12 @@ static void nrf_qwr_error_handler(uint32_t nrf_error)
     APP_ERROR_HANDLER(nrf_error);
 }
 
-
-/**@brief Function for handling write events to the LED characteristic.
- *
- * @param[in] p_lbs     Instance of LED Button Service to which the write applies.
- * @param[in] led_state Written/desired state of the LED.
- */
-// static void led_write_handler(uint16_t conn_handle, ble_lbs_t * p_lbs, uint8_t led_state)
-// {
-//     if (led_state)
-//     {
-//         bsp_board_led_on(LEDBUTTON_LED);
-//         NRF_LOG_INFO("Received LED ON!");
-//     }
-//     else
-//     {
-//         bsp_board_led_off(LEDBUTTON_LED);
-//         NRF_LOG_INFO("Received LED OFF!");
-//     }
-// }
-
 static void led_write_handler(uint16_t conn_handle, ble_lbs_t * p_lbs, const uint8_t* data)
 {
-// …Ë÷√±≥æ∞Õº
-	unsigned char *BlackImage;
-    /* you have to edit the startup_stm32fxxx.s file and set a big enough heap size */
-    unsigned short Imagesize = ((EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1)) * EPD_1IN54_V2_HEIGHT;
-    if((BlackImage = (UBYTE *)malloc(Imagesize)) == NULL) {
-        return ;
-    }
-    // int i = 0;
-    // char* pData = (char*)malloc(len);
-    // for(i = 0; i < len; i++){
-    //     pData[i] = data[i];
-    // }
-
     // œ‘ æŒƒ◊÷
     Paint_NewImage(BlackImage, EPD_1IN54_V2_WIDTH, EPD_1IN54_V2_HEIGHT, 0, WHITE);
     Paint_SelectImage(BlackImage);
     Paint_Clear(WHITE);
-    Paint_DrawString_EN(100, 45, (char*)data, &Font20, BLACK, WHITE);
     EPD_1IN54_V2_Display(BlackImage);
     nrf_delay_ms(200);
 }
@@ -1084,9 +1054,6 @@ int main(void)
     nrf_delay_ms(100);
 	
     // …Ë÷√±≥æ∞Õº
-	unsigned char *BlackImage;
-    /* you have to edit the startup_stm32fxxx.s file and set a big enough heap size */
-    unsigned short Imagesize = ((EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1)) * EPD_1IN54_V2_HEIGHT;
     if((BlackImage = (UBYTE *)malloc(Imagesize)) == NULL) {
         return -1;
     }
@@ -1103,45 +1070,45 @@ int main(void)
     nrf_delay_ms(500);
 
     // œ‘ æ ±º‰
-    EPD_1IN54_V2_Init();
-    EPD_1IN54_V2_DisplayPartBaseImage(BlackImage);
+    // EPD_1IN54_V2_Init();
+    // EPD_1IN54_V2_DisplayPartBaseImage(BlackImage);
 
-    printf("Partial refresh\r\n");
-    Paint_SelectImage(BlackImage);
-    PAINT_TIME sPaint_time;
-    sPaint_time.Hour = 12;
-    sPaint_time.Min = 34;
-    sPaint_time.Sec = 56;
-    int32_t num = 1000000000;
-    for (;;) {
-        sPaint_time.Sec = sPaint_time.Sec + 1;
-        if (sPaint_time.Sec == 60) {
-            sPaint_time.Min = sPaint_time.Min + 1;
-            sPaint_time.Sec = 0;
-            if (sPaint_time.Min == 60) {
-                sPaint_time.Hour =  sPaint_time.Hour + 1;
-                sPaint_time.Min = 0;
-                if (sPaint_time.Hour == 24) {
-                    sPaint_time.Hour = 0;
-                    sPaint_time.Min = 0;
-                    sPaint_time.Sec = 0;
-                }
-            }
-        }
-        Paint_ClearWindows(40, 100, 40 + Font20.Width * 7, 100 + Font20.Height, WHITE);
-        Paint_DrawTime(40, 100, &sPaint_time, &Font20, WHITE, BLACK);
-        num = num - 1;
-        if(num == 0) {
-            break;
-        }
-        EPD_1IN54_V2_DisplayPart(BlackImage);
-        nrf_delay_ms(500); // Analog clock 1s
+    // printf("Partial refresh\r\n");
+    // Paint_SelectImage(BlackImage);
+    // PAINT_TIME sPaint_time;
+    // sPaint_time.Hour = 12;
+    // sPaint_time.Min = 34;
+    // sPaint_time.Sec = 56;
+    // int32_t num = 1000000000;
+    // for (;;) {
+    //     sPaint_time.Sec = sPaint_time.Sec + 1;
+    //     if (sPaint_time.Sec == 60) {
+    //         sPaint_time.Min = sPaint_time.Min + 1;
+    //         sPaint_time.Sec = 0;
+    //         if (sPaint_time.Min == 60) {
+    //             sPaint_time.Hour =  sPaint_time.Hour + 1;
+    //             sPaint_time.Min = 0;
+    //             if (sPaint_time.Hour == 24) {
+    //                 sPaint_time.Hour = 0;
+    //                 sPaint_time.Min = 0;
+    //                 sPaint_time.Sec = 0;
+    //             }
+    //         }
+    //     }
+    //     Paint_ClearWindows(40, 100, 40 + Font20.Width * 7, 100 + Font20.Height, WHITE);
+    //     Paint_DrawTime(40, 100, &sPaint_time, &Font20, WHITE, BLACK);
+    //     num = num - 1;
+    //     if(num == 0) {
+    //         break;
+    //     }
+    //     EPD_1IN54_V2_DisplayPart(BlackImage);
+    //     nrf_delay_ms(500); // Analog clock 1s
 
-        // flash other events
-        button_ticks();
-        idle_state_handle();
-        __WFE();
-    }
+    //     // flash other events
+    //     button_ticks();
+    //     idle_state_handle();
+    //     __WFE();
+    // }
 
     while (1)
     {
