@@ -695,12 +695,29 @@ static void nrf_qwr_error_handler(uint32_t nrf_error)
 
 static void led_write_handler(uint16_t conn_handle, ble_lbs_t * p_lbs, const uint8_t* data)
 {
+<<<<<<< HEAD
+=======
+// ÉèÖÃ±³¾°Í¼
+	unsigned char *BlackImage;
+    /* you have to edit the startup_stm32fxxx.s file and set a big enough heap size */
+    unsigned short Imagesize = ((EPD_1IN54_V2_WIDTH % 8 == 0)? (EPD_1IN54_V2_WIDTH / 8 ): (EPD_1IN54_V2_WIDTH / 8 + 1)) * EPD_1IN54_V2_HEIGHT;
+    if((BlackImage = (UBYTE *)malloc(Imagesize)) == NULL) {
+        return ;
+    }
+
+>>>>>>> 6a2b8158391b8787518923d8003958d23e124b67
     // ÏÔÊ¾ÎÄ×Ö
     Paint_NewImage(BlackImage, EPD_1IN54_V2_WIDTH, EPD_1IN54_V2_HEIGHT, 0, WHITE);
     Paint_SelectImage(BlackImage);
     Paint_Clear(WHITE);
+<<<<<<< HEAD
+=======
+    Paint_DrawString_EN(40, 45, (char*)data, &Font20, WHITE, BLACK);
+>>>>>>> 6a2b8158391b8787518923d8003958d23e124b67
     EPD_1IN54_V2_Display(BlackImage);
     nrf_delay_ms(200);
+    if(BlackImage)
+        free(BlackImage);
 }
 
 
