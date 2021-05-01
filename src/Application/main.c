@@ -718,19 +718,16 @@ static void led_write_handler(uint16_t conn_handle, ble_lbs_t * p_lbs, const uin
     if((BlackImage = (UBYTE *)malloc(Imagesize)) == NULL) {
         return ;
     }
-    // int i = 0;
-    // char* pData = (char*)malloc(len);
-    // for(i = 0; i < len; i++){
-    //     pData[i] = data[i];
-    // }
 
     // 显示文字
     Paint_NewImage(BlackImage, EPD_1IN54_V2_WIDTH, EPD_1IN54_V2_HEIGHT, 0, WHITE);
     Paint_SelectImage(BlackImage);
     Paint_Clear(WHITE);
-    Paint_DrawString_EN(100, 45, (char*)data, &Font20, BLACK, WHITE);
+    Paint_DrawString_EN(40, 45, (char*)data, &Font20, WHITE, BLACK);
     EPD_1IN54_V2_Display(BlackImage);
     nrf_delay_ms(200);
+    if(BlackImage)
+        free(BlackImage);
 }
 
 
@@ -1103,45 +1100,45 @@ int main(void)
     nrf_delay_ms(500);
 
     // 显示时间
-    EPD_1IN54_V2_Init();
-    EPD_1IN54_V2_DisplayPartBaseImage(BlackImage);
+    // EPD_1IN54_V2_Init();
+    // EPD_1IN54_V2_DisplayPartBaseImage(BlackImage);
 
-    printf("Partial refresh\r\n");
-    Paint_SelectImage(BlackImage);
-    PAINT_TIME sPaint_time;
-    sPaint_time.Hour = 12;
-    sPaint_time.Min = 34;
-    sPaint_time.Sec = 56;
-    int32_t num = 1000000000;
-    for (;;) {
-        sPaint_time.Sec = sPaint_time.Sec + 1;
-        if (sPaint_time.Sec == 60) {
-            sPaint_time.Min = sPaint_time.Min + 1;
-            sPaint_time.Sec = 0;
-            if (sPaint_time.Min == 60) {
-                sPaint_time.Hour =  sPaint_time.Hour + 1;
-                sPaint_time.Min = 0;
-                if (sPaint_time.Hour == 24) {
-                    sPaint_time.Hour = 0;
-                    sPaint_time.Min = 0;
-                    sPaint_time.Sec = 0;
-                }
-            }
-        }
-        Paint_ClearWindows(40, 100, 40 + Font20.Width * 7, 100 + Font20.Height, WHITE);
-        Paint_DrawTime(40, 100, &sPaint_time, &Font20, WHITE, BLACK);
-        num = num - 1;
-        if(num == 0) {
-            break;
-        }
-        EPD_1IN54_V2_DisplayPart(BlackImage);
-        nrf_delay_ms(500); // Analog clock 1s
+    // printf("Partial refresh\r\n");
+    // Paint_SelectImage(BlackImage);
+    // PAINT_TIME sPaint_time;
+    // sPaint_time.Hour = 12;
+    // sPaint_time.Min = 34;
+    // sPaint_time.Sec = 56;
+    // int32_t num = 1000000000;
+    // for (;;) {
+    //     sPaint_time.Sec = sPaint_time.Sec + 1;
+    //     if (sPaint_time.Sec == 60) {
+    //         sPaint_time.Min = sPaint_time.Min + 1;
+    //         sPaint_time.Sec = 0;
+    //         if (sPaint_time.Min == 60) {
+    //             sPaint_time.Hour =  sPaint_time.Hour + 1;
+    //             sPaint_time.Min = 0;
+    //             if (sPaint_time.Hour == 24) {
+    //                 sPaint_time.Hour = 0;
+    //                 sPaint_time.Min = 0;
+    //                 sPaint_time.Sec = 0;
+    //             }
+    //         }
+    //     }
+    //     Paint_ClearWindows(40, 100, 40 + Font20.Width * 7, 100 + Font20.Height, WHITE);
+    //     Paint_DrawTime(40, 100, &sPaint_time, &Font20, WHITE, BLACK);
+    //     num = num - 1;
+    //     if(num == 0) {
+    //         break;
+    //     }
+    //     EPD_1IN54_V2_DisplayPart(BlackImage);
+    //     nrf_delay_ms(500); // Analog clock 1s
 
-        // flash other events
-        button_ticks();
-        idle_state_handle();
-        __WFE();
-    }
+    //     // flash other events
+    //     button_ticks();
+    //     idle_state_handle();
+    //     __WFE();
+    // }
 
     while (1)
     {
