@@ -102,8 +102,8 @@ uint32_t ble_lbs_init(ble_lbs_t * p_lbs, const ble_lbs_init_t * p_lbs_init)
     memset(&add_char_params, 0, sizeof(add_char_params));
     add_char_params.uuid              = LBS_UUID_BUTTON_CHAR;
     add_char_params.uuid_type         = p_lbs->uuid_type;
-    add_char_params.init_len          = 20;
-    add_char_params.max_len           = 20;
+    add_char_params.init_len          = 1;
+    add_char_params.max_len           = 240;
     add_char_params.char_props.read   = 1;
     add_char_params.char_props.notify = 1;
 
@@ -122,8 +122,8 @@ uint32_t ble_lbs_init(ble_lbs_t * p_lbs, const ble_lbs_init_t * p_lbs_init)
     memset(&add_char_params, 0, sizeof(add_char_params));
     add_char_params.uuid             = LBS_UUID_LED_CHAR;
     add_char_params.uuid_type        = p_lbs->uuid_type;
-    add_char_params.init_len         = 20;
-    add_char_params.max_len          = 20;
+    add_char_params.init_len         = 1;
+    add_char_params.max_len          = 240;
     add_char_params.char_props.read  = 1;
     add_char_params.char_props.write = 1;
 

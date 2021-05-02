@@ -895,6 +895,7 @@ static void ble_stack_init(void)
 
     // Enable BLE stack.
     err_code = nrf_sdh_ble_enable(&ram_start);
+
     APP_ERROR_CHECK(err_code);
 
     // Register a handler for BLE events.
