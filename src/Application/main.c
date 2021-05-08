@@ -693,14 +693,25 @@ static void nrf_qwr_error_handler(uint32_t nrf_error)
     APP_ERROR_HANDLER(nrf_error);
 }
 
+static int cnt = 0;
+static uint8_t gImage_1in54[5000] = {0};
 static void led_write_handler(uint16_t conn_handle, ble_lbs_t * p_lbs, const uint8_t* data)
 {
+    int i = 0;
+    for(i = 0; i < 200; i++){
+        gImage_1in54[cnt*200+i] = data[i];
+    }
+    cnt++;
+    if(cnt >= 25){
     // 显示文字
-    Paint_NewImage(BlackImage, EPD_1IN54_V2_WIDTH, EPD_1IN54_V2_HEIGHT, 0, WHITE);
-    Paint_SelectImage(BlackImage);
-    Paint_Clear(WHITE);
-    EPD_1IN54_V2_Display(BlackImage);
-    nrf_delay_ms(200);
+        Paint_NewImage(BlackImage, EPD_1IN54_V2_WIDTH, EPD_1IN54_V2_HEIGHT, 0, WHITE);
+        // Paint_SelectImage(BlackImage);
+        // Paint_Clear(WHITE);
+        Paint_DrawBitMap(gImage_1in54);
+        EPD_1IN54_V2_Display(BlackImage);
+        nrf_delay_ms(200);
+        cnt = 0;
+    }
 }
 
 
@@ -1061,7 +1072,7 @@ int main(void)
 
     // 显示文字
     Paint_NewImage(BlackImage, EPD_1IN54_V2_WIDTH, EPD_1IN54_V2_HEIGHT, 0, WHITE);
-    Paint_SelectImage(BlackImage);
+    // Paint_SelectImage(BlackImage);
     Paint_Clear(WHITE);
     Paint_DrawString_EN(5, 45, "love", &Font20, BLACK, WHITE);
     Paint_DrawNum(5, 70, 5201314, &Font20, BLACK, WHITE);
